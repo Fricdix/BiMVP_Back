@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth";
+import usersRoutes from "./routes/users";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors({ origin: true, credentials: true }));
 
 // Mount auth routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", usersRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, env: process.env.NODE_ENV || "development" });

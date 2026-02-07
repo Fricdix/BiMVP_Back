@@ -68,16 +68,10 @@ router.post("/register", async (req, res) => {
     data: { name, email, password, role: role ?? "USER" },
   });
 
-  const token = await signSessionToken({
-    sub: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-  });
-  setAuthCookieExpress(res, token);
   return res.json({
     ok: true,
-    session: {
+    message: "Registro exitoso. Inicia sesión para continuar.",
+    user: {
       id: user.id,
       name: user.name,
       email: user.email,
