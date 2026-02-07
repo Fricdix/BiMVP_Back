@@ -20,6 +20,7 @@ const registerSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   password: z.string().min(6),
+  role: z.enum(["USER", "ANALYST"]).optional(),
 });
 
 router.post("/login", async (req, res) => {
@@ -59,12 +60,12 @@ router.post("/register", async (req, res) => {
   if (!parsed.success)
     return res.status(400).json({ message: "Datos inválidos" });
 
-  const { name, email, password } = parsed.data;
+  const { name, email, password, role } = parsed.data;
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return res.status(400).json({ message: "Usuario ya existe" });
 
   const user = await prisma.user.create({
-    data: { name, email, password },
+    data: { name, email, password, role: role ?? "USER" },
   });
 
   const token = await signSessionToken({
