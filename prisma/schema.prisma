@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://${env("DB_USER")}:${env("DB_PASS")}@${env("DB_HOST")}:3306/${env("DB_NAME")}"
+}
+
+enum Role {
+  USER
+  ANALYST
+  ADMIN
+}
+
+enum Platform {
+  TIKTOK
+  YOUTUBE
+  INSTAGRAM
+  TWITTER
+}
+
+enum InfluenceLevel {
+  ALTO
+  MEDIO
+  BAJO
+}
+
+model User {
+  id       String   @id @default(cuid())
+  name     String
+  email    String   @unique
+  password String
+  role     Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reports Report[] @relation("ReportCreatedBy")
+}
+
+model KpiDaily {
+  id         String   @id @default(cuid())
+  date       DateTime @unique
+  sales      Int
+  growthPct  Float
+  conversion Float
+  createdAt  DateTime @default(now())
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  title     String
+  category  String
+  fromDate  DateTime
+  toDate    DateTime
+  createdAt DateTime @default(now())
+
+  createdById String
+  createdBy   User   @relation("ReportCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  metrics ReportMetric[]
+
+  @@index([createdById])
+}
+
+model ReportMetric {
+  id    String @id @default(cuid())
+  name  String
+  value Int
+
+  reportId String
+  report   Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId])
+}
+
+model Product {
+  id            String @id @default(cuid())
+  name          String
+  category      String
+  priceUsd      Float?
+  marketDemand  Int    @default(0)
+  businessScore Float  @default(0)
+  level         String @default("Estándar")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recommendations Recommendation[]
+}
+
+model Influencer {
+  id            String         @id @default(cuid())
+  name          String
+  platform      Platform
+  country       String         @default("Ecuador")
+  followers     Int            @default(0)
+  engagementPct Float          @default(0)
+  score         Int            @default(0)
+  level         InfluenceLevel @default(MEDIO)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recommendations Recommendation[]
+}
+
+model Recommendation {
+  id         String @id @default(cuid())
+  matchScore Int    @default(0)
+  note       String @default("")
+
+  productId    String
+  influencerId String
+
+  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  influencer Influencer @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([influencerId])
+}
