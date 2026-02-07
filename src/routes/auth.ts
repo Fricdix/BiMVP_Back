@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { z } from "zod";
-import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma";
 import {
   signSessionToken,
@@ -33,8 +32,8 @@ router.post("/login", async (req, res) => {
   if (!user)
     return res.status(401).json({ message: "Credenciales incorrectas" });
 
-  // Comparar contraseña con hash almacenado
-  const ok = await bcrypt.compare(password, user.passwordHash);
+  // Comparar contraseña en texto plano (solo desarrollo)
+  const ok = password === user.password;
   if (!ok) return res.status(401).json({ message: "Credenciales incorrectas" });
 
   const token = await signSessionToken({
@@ -64,10 +63,8 @@ router.post("/register", async (req, res) => {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return res.status(400).json({ message: "Usuario ya existe" });
 
-  // Hash de contraseña antes de guardar
-  const passwordHash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { name, email, passwordHash },
+    data: { name, email, password },
   });
 
   const token = await signSessionToken({
