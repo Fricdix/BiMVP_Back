@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "npx prisma generate && tsc -p tsconfig.json",
-    "postinstall": "npx prisma generate",
+    "build": "node node_modules/prisma/build/index.js generate && tsc -p tsconfig.json",
+    "postinstall": "node node_modules/prisma/build/index.js generate",
     "start": "node dist/src/server.js",
     "generate-hashes": "node generate-password-hashes.js"
   },
