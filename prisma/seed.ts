@@ -1,5 +1,4 @@
 import { PrismaClient, Role, Platform, InfluenceLevel } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import { addDays, subDays } from "date-fns";
 
 const prisma = new PrismaClient();
@@ -19,7 +18,7 @@ async function main() {
       name: "Administrador",
       email: "admin@demo.com",
       role: Role.ADMIN,
-      passwordHash: await bcrypt.hash("Admin123*", 10),
+      password: "Admin123*",
     },
   });
 
@@ -28,7 +27,7 @@ async function main() {
       name: "Analista",
       email: "analista@demo.com",
       role: Role.ANALYST,
-      passwordHash: await bcrypt.hash("Analyst123*", 10),
+      password: "Analyst123*",
     },
   });
 
@@ -37,7 +36,7 @@ async function main() {
       name: "Usuario",
       email: "usuario@demo.com",
       role: Role.USER,
-      passwordHash: await bcrypt.hash("User123*", 10),
+      password: "User123*",
     },
   });
 

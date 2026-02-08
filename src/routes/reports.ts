@@ -52,7 +52,7 @@ function toCsv(rows: any[]) {
 async function pdfBuffer(rows: any[]) {
   const doc = new PDFDocument({ margin: 50 });
   const chunks: Buffer[] = [];
-  doc.on("data", (d) => chunks.push(Buffer.from(d)));
+  doc.on("data", (d: Buffer) => chunks.push(Buffer.from(d)));
 
   doc.fontSize(18).text("Reporte Exportado (BI Dashboard)", { align: "left" });
   doc.moveDown(0.5);
