@@ -27,7 +27,7 @@ function toCsv(rows: any[]) {
   const escape = (v: any) => {
     const s = String(v ?? "");
     if (s.includes(",") || s.includes('"') || s.includes("\n")) {
-      return '"' + s.replaceAll('"', '""') + '"';
+      return '"' + s.split('"').join('""') + '"';
     }
     return s;
   };
