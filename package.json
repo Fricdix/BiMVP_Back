@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc -p tsconfig.json",
+    "postinstall": "prisma generate",
     "start": "node dist/src/server.js",
     "generate-hashes": "node generate-password-hashes.js"
   },
